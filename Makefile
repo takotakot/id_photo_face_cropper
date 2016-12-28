@@ -7,7 +7,7 @@ CC = gcc
 CXX = g++
 
 # TARGET = face_lena face_lena_2 clip face_lena_2_clip multi_face_recognition_1
-TARGET = face_lena_2_clip face_lena_2_writeout multi_face_recognition_1 multi_face_recognition_2 multi_face_recognition_3 multi_face_recognition_2_lbp multi_face_recognition_2_fast multi_face_recognition_2_fast_out_text
+TARGET = face_lena_2_clip face_lena_2_writeout multi_face_recognition_1 multi_face_recognition_2 multi_face_recognition_3 multi_face_recognition_2_lbp multi_face_recognition_2_fast multi_face_recognition_2_fast_out_text multi_wh_loader multi_rotator multi_face_detector_slow multi_cropper
 # TARGET = multi_face_recognition_1
 
 # /cygdrive/c/Users/nakano/progs/opencv
@@ -40,10 +40,10 @@ LIBPATH = -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_objdetect -lo
 # LIBPATH = -L/home/tako/progs/local/lib/ -lopencv_core.dll -lopencv_highgui.dll -lopencv_objdetect.dll -lopencv_imgproc.dll
 
 % : %.cc
-	$(CXX) -pipe -O2 -Wall $(INCLUDE) $< $(LIBPATH) -o $@
+	$(CXX) -pipe -fopenmp -O2 -Wall $(INCLUDE) $< $(LIBPATH) -o $@
 
 % : %.c
-	$(CC) -pipe -O2 $(INCLUDE) $*.o $(LIBPATH) -o $@
+	$(CC) -pipe -fopenmp -O2 $(INCLUDE) $*.o $(LIBPATH) -o $@
 
 all : $(TARGET)
 
