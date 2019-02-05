@@ -388,6 +388,7 @@ void face_cropper::detect(dlib::cv_image<T> &image) {
   metrics.clear();
   for (std::vector<dlib::rectangle>::iterator it = faces.begin();
        it != faces.end(); ++it) {
+    // std::cerr << *it << std::endl;
     shapes.push_back(predictor(image, *it));
     metrics.push_back(face_metrics(focal_length, center, shapes.back()));
   }
@@ -400,7 +401,7 @@ int face_cropper::get_num_faces() { return faces.size(); }
 // https://qiita.com/vs4sh/items/93d65468a992af5b8f92
 void face_cropper::crop_rotatedrect(cv::Mat &i_img, cv::RotatedRect &rect,
                                     cv::Mat &o_img) {
-  cv::Mat rotation_matrix, rotated = i_img;
+  cv::Mat rotation_matrix, rotated = i_img.clone();
 
   angle = rect.angle;
   cv::Size rect_size = rect.size;
@@ -422,7 +423,7 @@ void face_cropper::crop_rotatedrect(cv::Mat &i_img, cv::RotatedRect &rect,
                  cv::INTER_CUBIC);
   // 回転した画像から矩形領域を切り出す
   // o_img = cv::Mat(i_img.size(), i_img.type());
-  o_img = i_img;
+  // o_img = i_img;
   cv::getRectSubPix(rotated, rect_size, rect.center, o_img);
 }
 
@@ -481,7 +482,16 @@ bool face_cropper::detect_and_output(std::string &read_img_name,
       // std::cerr << __LINE__ << std::endl;
       crop_nth(img_color, i, o_img);
       filename = get_nth_img_name(write_img_name, i);
+#ifdef HEAD_POSE_ESTIMATION_DEBUG
+if(0) {
+      metrics[i].add_debug_image(img_color);
+      metrics[i].calc_pose(shapes[i]);
+      cv::imwrite(filename.c_str(), metrics[i]._debug);
+}
       cv::imwrite(filename.c_str(), o_img);
+#else
+      cv::imwrite(filename.c_str(), o_img);
+#endif
       // std::cerr << "write: " << filename << std::endl;
       oss << filename << "\t";
       dump_metric(i, oss);

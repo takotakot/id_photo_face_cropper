@@ -11,7 +11,7 @@ void readdir_recursive::read_all(std::string dir_str, std::string subdir_str)
 {
     DIR *dir;
     struct dirent *ent;
-    std::string child_str;
+    std::string child_str, child_name;
     if (subdir_str != "")
     {
         subdir_str = subdir_str + "/";
@@ -20,9 +20,11 @@ void readdir_recursive::read_all(std::string dir_str, std::string subdir_str)
     if ((dir = opendir(dir_str.c_str())) != NULL)
     {
         /* print all the files and directories within directory */
-        while ((ent = readdir(dir)) != NULL)
-        {
-            child_str = subdir_str + ent->d_name;
+
+        while ((ent = readdir(dir)) != NULL) {
+          child_str = subdir_str + ent->d_name;
+          child_name = dir_str + ent->d_name;
+#if 0
             switch (ent->d_type)
             // http://www.cplusplus.com/forum/beginner/212915/
             {
@@ -51,6 +53,22 @@ void readdir_recursive::read_all(std::string dir_str, std::string subdir_str)
                 /*NOP*/;
             }
             // printf("%s\n", ent->d_name);
+#endif
+            struct stat info;
+            if (stat(child_name.c_str(), &info) == 0) {
+                if (info.st_mode & S_IFREG) {
+                    filelist.push_back(child_str);
+                } else if (info.st_mode & S_IFDIR) {
+                    if (strcmp(ent->d_name, ".") != 0 &&
+                        strcmp(ent->d_name, "..") != 0) {
+                        dirlist.push_back(child_str);
+                        read_all(dir_str + ent->d_name, dirlist.back());
+                    }
+                }
+            } else {
+                // printf("cannot access %s\n", pathname);
+                std::cerr << "stat fail" << __LINE__ << std::endl;
+            }
         }
         closedir(dir);
     }

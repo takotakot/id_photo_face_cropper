@@ -120,7 +120,7 @@ struct face_metrics {
   void add_debug_image(cv::Mat &image);
 #endif
 
- private:
+ // private:
   head_pose calc_pose(dlib::full_object_detection &shape);
 };
 
