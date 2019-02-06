@@ -14,6 +14,9 @@ int main(int argc, char *argv[]) {
   struct src_set sst;
 
   std::string dir_str = "c:\\cygwin64\\";
+  std::string exe_path = get_exe_path_from_argv0(argv[0]);
+  std::string landmark_model_name = "shape_predictor_68_face_landmarks.dat";
+  std::string landmark_model_path = exe_path + landmark_model_name;
   if (argc < 2) {
     // nop
     std::cout
@@ -64,7 +67,7 @@ int main(int argc, char *argv[]) {
 #pragma omp parallel  // num_threads(8)
   {
     // cropper cropper_obj;
-    face_cropper cropper;
+    face_cropper cropper(landmark_model_path);
     // std::stringstream obuf;
 
     std::string filename, read_img_name, write_img_name, dest_dirname;

@@ -127,3 +127,15 @@ std::string get_nth_img_name(std::string img_name, int n) {
   }
   return filename;
 }
+
+std::string get_exe_path_from_argv0(char *argv0) {
+  std::string path = argv0;
+  std::string slash_backslash = "/\\";
+  std::string::size_type last_slash;
+  last_slash = path.find_last_of(slash_backslash);
+  if (last_slash == std::string::npos) {
+    // last_slash = 0;
+    return std::string("./");
+  }
+  return path.substr(0, last_slash + 1);
+}

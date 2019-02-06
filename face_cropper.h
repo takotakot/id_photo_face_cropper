@@ -135,6 +135,7 @@ class face_cropper {
 
  public:
   face_cropper();
+  face_cropper(const std::string &landmark_model_path);
   template <typename T>
   void detect(dlib::cv_image<T> &image);
   int get_num_faces();
@@ -143,6 +144,9 @@ class face_cropper {
   void dump_metric(int n, std::ostream &os);
   bool detect_and_output(std::string &read_img_name,
                          std::string &write_img_name, std::ostringstream &oss);
+
+private:
+ void init(const std::string &landmark_model_path = "shape_predictor_68_face_landmarks.dat");
 };
 
 inline type_point toCv(const dlib::point &p) {

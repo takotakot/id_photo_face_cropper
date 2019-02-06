@@ -369,8 +369,16 @@ head_pose face_metrics::calc_pose(dlib::full_object_detection &shape) {
 }
 
 face_cropper::face_cropper() {
+  init();
+}
+
+face_cropper::face_cropper(const std::string &landmark_model_path) {
+  init(landmark_model_path);
+}
+
+void face_cropper::init(const std::string &landmark_model_path) {
   detector = dlib::get_frontal_face_detector();
-  dlib::deserialize("shape_predictor_68_face_landmarks.dat") >> predictor;
+  dlib::deserialize(landmark_model_path) >> predictor;
 }
 
 template <typename T>
